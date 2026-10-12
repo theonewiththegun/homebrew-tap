@@ -1,0 +1,17 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  formulae:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: |
+          mkdir -p "$(brew --repository)/Library/Taps/theonewiththegun"
+          ln -s "$GITHUB_WORKSPACE" "$(brew --repository)/Library/Taps/theonewiththegun/homebrew-tap"
+      - run: brew audit --strict --online theonewiththegun/tap/secret-prompt
+      - run: brew install --build-from-source theonewiththegun/tap/secret-prompt
+      - run: brew test theonewiththegun/tap/secret-prompt
